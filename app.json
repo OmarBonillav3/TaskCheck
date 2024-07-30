@@ -12,16 +12,24 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.TaskCheck.TaskCheckv3"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package":"com.TaskCheck.TaskCheckv3"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "679b6869-a37e-42aa-94c7-744eda9b1d50"
+      }
+    },
+    "scheme": "TaskCheckv3"
   }
 }
