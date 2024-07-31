@@ -5,9 +5,13 @@ Este es un proyecto personal en el cual quiero demostar las funcionalidad que se
 - Crear listas
 - Agregar recordatorios mas customizables en el calendario (Proximamente)
 
+## Instalacion y Ejecucion de proyecto
+
 ```bash
-## Como Instalar - Es importante tener la App Expo Go
+# Como Instalar las depencias necesarias
 
 yarn add expo
+
+# Comando para iniciar el proyecto - Recomiendo usar ExpoGo
 npx expo start
 
