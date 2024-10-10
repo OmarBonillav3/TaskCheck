@@ -1,5 +1,5 @@
 
-import { StyleSheet, Image, Platform, TouchableOpacity, Keyboard } from 'react-native';
+import { StyleSheet, Platform, TouchableOpacity, Keyboard } from 'react-native';
 import React, { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -7,17 +7,24 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+// Importando iconos
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon3 from 'react-native-vector-icons/Feather'; 
 import Icon4 from 'react-native-vector-icons/Entypo';
+
+// Importando pantallas para navegacion por Stacks
 import Inicio from './screens/Inicio';
 import Login from './screens/Login';
 import Register from './screens/Register';
+
+// Importando pantallaas para navegacion por Tabs
 import Home from './screens/Home';
 import BotonBack from './components/BotonBack';
 import NotasScreen from './screens/NotasScreen';
 import LogoGeneral from './components/LogoGeneral';
+import CrearNota from './components/CrearNota';
 
 
 const Stack = createStackNavigator();
@@ -63,7 +70,7 @@ function HomeTabs () {
         />
           <Tab.Screen 
             name='List'
-            component={'Home'}
+            component={'List'}
             options={{
               headerTitle: '',
               headerStyle: {
@@ -92,9 +99,9 @@ function HomeTabs () {
             },
             headerLeft: () => 
             <BotonBack 
-              // navigation={navigation}
               style={styles.BotonBackAjustes}
               iconStyle={styles.IconBackStyle}
+              texto='Notas'
             />,
             headerRight: () => 
               <TouchableOpacity onPress={dismissKeyboard} style={styles.BotonListo}>
@@ -103,9 +110,6 @@ function HomeTabs () {
                     name='check'
                 />
               </TouchableOpacity>
-            
-            
-           
           }}
         />
     </Tab.Navigator>
@@ -128,11 +132,14 @@ function NavegacionStack() {
       <Stack.Screen name='Login' component={Login} />
       <Stack.Screen name='Register' component={Register} />
       <Stack.Screen name='HomeTabs' component={HomeTabs}/> 
+      <Stack.Screen name='CrearNota' component={CrearNota}/> 
+
       
     </Stack.Navigator>
   );
 }
 
+// Agregando fuentes de forma global
 export default function App() {
 
   const [loaded] = useFonts({
@@ -184,12 +191,15 @@ const styles = StyleSheet.create({
     top:Platform.OS === 'ios' ? 8: 15,
 },
   IconBackStyle: {
-  fontSize:Platform.OS === 'ios' ? 30: 30,
-  color: '#8CAE81'
+    fontSize:Platform.OS === 'ios' ? 30: 30,
+    color: '#8CAE81'
 },
-TxtListoBoton: {
-  marginRight:10,  
-  fontSize:30,
-  color:'#8CAE81',
+  TxtListoBoton: {
+    marginRight:20,  
+    fontSize:30,
+    color:'#8CAE81',
 },
 });
+
+
+// KAYROS - 16/Julio/2024 //

@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet,Text, View, TextInput, Platform, ScrollView, TouchableOpacity, Modal, TouchableWithoutFeedback} from 'react-native';
-import Notas from '../components/Notas'
-import MenuFlotante from '../components/MenuFlotante'
+// import Notas from '../components/Notas'
+// import MenuFlotante from '../components/MenuFlotante'
 import Icon from 'react-native-vector-icons/AntDesign';
-import Prueba from '../components/Prueba' 
+import CrearNota from '../components/CrearNota';
+
 
 
 export default function Home () {
@@ -34,23 +35,8 @@ export default function Home () {
                    <Text style={styles.Txt2}>
                         ¿Te gustaría empezar ahora?
                    </Text>
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
-                   <Notas />
+                   
+                    <CrearNota />
                 </View>
             </ScrollView>
         </View>

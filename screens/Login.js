@@ -1,14 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Alert} from 'react-native';
 import { StatusBar } from "expo-status-bar";
+
+//Importanto iconos usables
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Entypo';
 import BotonBack from '../components/BotonBack';
 
 export default function Login ({ navigation }) {
-    const [user, setUser] = useState(null);
-    const [Password, setPassword] = useState();
+    //Declarando constantes usabales
+    const [userLogin, setUserLogin] = useState('');
+    const [passwordLogin, setPasswordLogin] = useState('');
+    const [nombreGuardado, setNombreGuardado] = useState(''); //Para verificar si es correcto el nombre guardado
+    const [contraseñaGuardada, setContraseñaGuardada] = useState(''); //Para verificar si es correcta la contraseña guardada
+
+        useEffect (() => {
+          const LlamandaDeDatos = async () => {
+            try {
+                const Usuario = await AsyncStorage.getItem('@Usuario')
+                const Contraseña = await AsyncStorage.getItem ('@Contraseña')
+     
+                 if (Usuario !== null && Contraseña !== null) {
+                     setNombreGuardado(Usuario);
+                     setContraseñaGuardada(Contraseña);
+                 }
+                } catch (error) {
+                    console.log('Error al obtener los datos:', error);
+                  }
+             }  
+             LlamandaDeDatos();  
+        },[]);
+            
+
+            const VerificarDatos = () => {
+                if (userLogin === nombreGuardado  && passwordLogin ===  contraseñaGuardada) {
+                    navigation.navigate('HomeTabs')
+                } else {
+                    Alert.alert ('Usuario no encontrado','Asegurate de escribir correctamente tu nombre y contraseña')
+                }
+            }
+
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -31,8 +63,8 @@ export default function Login ({ navigation }) {
                 <Icon name='user' style={styles.Icons}/>
                 <TextInput
                     placeholder='User '
-                    value={user}
-                    onChangeText={setUser}
+                    value={userLogin}
+                    onChangeText={setUserLogin}
                     style={styles.TextInput} 
                 /> 
             </View> 
@@ -41,31 +73,27 @@ export default function Login ({ navigation }) {
                 <Icon name='lock' style={styles.Icons}/>
                 <TextInput
                     placeholder='Password'
-                    value={Password}
-                    onChangeText={setPassword}
+                    value={passwordLogin}
+                    onChangeText={setPasswordLogin}
                     style={styles.TextInput} 
                     secureTextEntry={true}
                 />
             </View> 
-
-            {/* <TouchableOpacity style={styles.BotonInicar} onPress={() => navigation.navigate('HomeTabs')}> */}
-
-            {user === null && 
-            
-            <TouchableOpacity style={styles.BotonInicar} onPress={() => navigation.navigate('HomeTabs')}>
+                        {/* Boton para iniciar session */}
+            <TouchableOpacity style={styles.BotonInicar} onPress={VerificarDatos}>
                 <Text style={styles.TxtBotonIniciar}>
                     Iniciar Session
                 </Text>
             </TouchableOpacity> 
-            }
 
-
+                {/* Boton para ir a la pantalla de registro */}
             <TouchableOpacity style={styles.BotonRegistrarse} onPress={() => navigation.navigate ('Register') }>
                 <Text style={styles.TxtBotonRegistrarse}>
                     Registrarse
                 </Text>
             </TouchableOpacity> 
 
+                {/* Iniciar session con google - que por ahora no fuciona */}
             <TouchableOpacity style={styles.ContainerRegisterGoogle}>
                 <Icon name='google' style={styles.IconGoogle}/> 
                 <Text style={styles.TxtRegisterGoogle}>| Iniciar con Google</Text>
@@ -81,7 +109,6 @@ const styles = StyleSheet.create({
         alignContent:'center',
         backgroundColor:'#1E1E1E',
     },
-
     ContainerTxt: {
         marginBottom:Platform.OS === 'ios' ? 320 : 320,
     },
@@ -107,6 +134,7 @@ const styles = StyleSheet.create({
         alignSelf:'center',
         color:'#FFFFFF',
     },
+
     //    ESTILOS DE LOS INPUTS
     ContainerInputs: {
         bottom:Platform.OS === 'ios' ? 230 : 230,
@@ -148,6 +176,7 @@ const styles = StyleSheet.create({
         fontSize:18,
         fontFamily:'OpenSansBold',
     },
+
     //   BOTON PARA REGISTRARSE DESDE EL LOGIN
     BotonRegistrarse: {
         bottom:Platform.OS === 'ios' ? 180 : 180 ,
