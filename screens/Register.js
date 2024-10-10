@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard, Platform  } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard, Platform, Alert  } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Fontisto';
 import Icon3 from 'react-native-vector-icons/Entypo';
@@ -7,11 +8,41 @@ import BotonBack from '../components/BotonBack';
 import { useNavigation } from '@react-navigation/native';
 
 export default function Register () {
-    const [User, setUser] = useState();
-    const [Email, setEmail] = useState();
-    const [Password, setPassword] = useState();
-    const navigation = useNavigation();
+    const [userRegister, setUserRegister] = useState('');
+    const [passwordRegister, setPasswordRegister] = useState('');
+    const [passwordRegisterx2, setpasswordRegisterx2] = useState('');
 
+    const navigation = useNavigation(); //Para el boton de retroceder la pantalla
+
+    //Funcion para guardar los datos de los usuarios en la memoria del celular
+    async function GuardarDatos() {
+        try {
+        //Guardando informacion de usuarios
+        await AsyncStorage.setItem('@Usuario', userRegister) //Guardando nombre del usuario
+        await AsyncStorage.setItem ('@Contraseña', passwordRegister) //Guardando contraseña del usuario
+        // await AsyncStorage.setItem ('@Email', setEmailRegister) // Guardando email del usuario
+
+        if (passwordRegister === passwordRegisterx2) {
+            navigation.navigate ('Login');
+
+        } else {
+            Alert.alert('las Contraseña no son iguales','Procura que las constraseñas sean exactamente iguales para poder continuar')
+        }
+
+    } catch (error) {
+        console.log('Error al guardar datos:', error);
+      }
+}
+
+
+                                // NOTAS IMPORTANTES
+//AGREGAR UNA FUNCION PARA QUE NO SE REPITAN CONTRASEñAS Y NOMBRES
+
+
+                                    //OBSERVACIONES
+//- SOLO SE GUARDA UN USUARIO NO SE SI ES MALO PERO BUENO AHI TENEMOS UN "PROBLEMA"
+
+//- CREO QUE TAMBIEN ESTOS INICIO DE SESSION NO SE GUARDAN DEL TODO, DESDE QUE SE INICIA SESSION SE BORRAN
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -20,7 +51,7 @@ export default function Register () {
             <BotonBack navigation={navigation} />
             <View style={styles.ContainerTxt}>
                 <View style={styles.DiseñoCheck}>
-                    <Text style={styles.TxtRegister}>Regístrate</Text>
+                    <Text style={styles.TxtRegister}>Register</Text>
                     <Icon3 style={styles.IconCheck} name='check'/>
                 </View>
 
@@ -32,35 +63,36 @@ export default function Register () {
                 <Icon name='user' style={styles.Icons}/>
                 <TextInput
                     placeholder='User '
-                    value={User}
-                    onChangeText={setUser}
+                    value={userRegister}
+                    onChangeText={setUserRegister} //Esto fue cambiado para el AsyncStorage, Aqui originalmente iba onChangeText={setUser}
                     style={styles.TextInput} 
                 />
             </View> 
 
-                {/* INPUT EMAIL */}
-            <View style={styles.ContainerInputs}>
-                <Icon2 name='email' style={styles.Icons}/>
-                <TextInput
-                    placeholder='Email'
-                    value={Email}
-                    onChangeText={setEmail}
-                    style={styles.TextInput} 
-                />
-            </View>  
                 {/* INPUT PASSWORD*/}
             <View style={styles.ContainerInputs}>
                 <Icon name='lock' style={styles.Icons}/>
                 <TextInput
                     placeholder='Password'
-                    value={Password}
-                    onChangeText={setPassword}
+                    value={passwordRegister}
+                    onChangeText={setPasswordRegister}
                     style={styles.TextInput} 
                     secureTextEntry={true}
                 />
             </View>  
+            <View style={styles.ContainerInputs}>
+                <Icon name='lock' style={styles.Icons}/>
+                <TextInput
+                    placeholder='Repeat Password'
+                    value={passwordRegisterx2}
+                    onChangeText={setpasswordRegisterx2}
+                    style={styles.TextInput} 
+                    secureTextEntry={true}
+                />
+            </View>  
+            {/* onPress={() => navigation.navigate('HomeTabs')} */}
                     {/* BOTON PARA GUARDAR DATOS EN BASE DE DATOS E INCIAR */}
-            <TouchableOpacity style={styles.BotonRegistrar} onPress={() => navigation.navigate('HomeTabs')}>
+            <TouchableOpacity style={styles.BotonRegistrar} onPress={GuardarDatos}>
                 <Text style={styles.TxtBotonRegistrar}>
                     Regístrarse
                 </Text>

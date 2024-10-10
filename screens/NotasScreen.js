@@ -1,11 +1,39 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native'; 
-import BotonBack from '../components/BotonBack';
-import Icon from 'react-native-vector-icons/Entypo';
+import { View, Button, StyleSheet, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Home from './Home';
+// import BotonBack from '../components/BotonBack';
+// import Icon from 'react-native-vector-icons/Entypo';
 
+
+
+                // NOTAS IMPORTANTES
+// - El teclado cuando sale para escribir en la plataforma de
+//android hace que suba con todo y barra de navegacion
+
+// - Hacer que cuando escriba la nota se agregue directamente en el Home
+//y junto con ella se borre el texto "Aun no tienes notas?"
+
+
+
+// export default function NotasScreen ({ navigation }) {
 export default function NotasScreen ({ navigation }) {
     const [note, setNote] = useState('');
 
+  //   async function GuardarNota () {
+  //     try {
+  //         await AsyncStorage.setItem('@Nota', note); // Guardando la nota
+  //         console.log('Nota guardada:', note);
+          
+  //         if (note !== '') {
+  //           navigation.navigate('Home');
+  //       } 
+  //     } catch (error) {
+  //         console.log('Error al guardar la nota:', error);
+  //     }
+  // }
+
+  
     const dismissKeyboard = () => {
         Keyboard.dismiss();
       };
@@ -21,7 +49,12 @@ export default function NotasScreen ({ navigation }) {
                 autoFocus
                 multiline
             />
+
+            <Button title='Guardar' onPress={''}/>
           </View>
+          {/* <View>
+            <Button title='Guardar' onPress={GuardarNota}/>
+          </View> */}
         </TouchableWithoutFeedback>
       );
     };

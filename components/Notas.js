@@ -1,14 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, StyleSheet, Platform, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; 
 
 const Notas = () => {
 
+    const [notaGuardada, setNotaGuarda] =  useState ('');
+
+        const LlamandoNota = async () => {
+            const Nota = await AsyncStorage.getItem('@Nota');
+            if (Nota !== null) {
+                setNotaGuarda(Nota);
+            } 
+        } 
+      
+
+    useEffect (() => {
+        LlamandoNota();
+    }, []);
+    
+    
+
+
     return (
             <View style={styles.Notas}>
                 <TouchableOpacity style={styles.TouchableIcon}>
                     <Icon name='pencil' style={styles.IconPencil} />
-                </TouchableOpacity>  
+                </TouchableOpacity> 
+                <Text>{notaGuardada ? notaGuardada : 'Esta nota esta vacia'}</Text> 
             </View>
     )
 }
