@@ -1,0 +1,50 @@
+import { StyleSheet, TouchableOpacity, Text, Platform} from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo';
+import { useNavigation } from '@react-navigation/native';
+
+const BotonBack = ({ style, iconStyle , texto, TxtStyle }) => {
+    const navigation = useNavigation();
+    return (
+        <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.BotonBack, style]}>
+            <Icon style={[styles.IconBack, iconStyle]} name='chevron-left' />
+            {texto && <Text style={[styles.texto, TxtStyle]}> {texto} </Text>}
+        </TouchableOpacity>
+    )
+}
+                            // NOTAS IMPORTANTES
+// - Tenemos algunos componentes coo el texto y el estilo de este 
+//boton que se puede adaptar de forma separada dependiando de como sea 
+//el diseño de dicha pantalla
+// _______________________________________________________________________
+//Ejemplo: 
+// <BotonBack 
+//      style={styles.BotonBackAjustes}
+//      iconStyle={styles.IconBackStyle}
+//      TxtStyle={styles.TxtStyle}
+//      texto='Notas' //Aqui se puede cambiar el nombres o tambien quitarlo si no lo necesita
+//             />,
+// _______________________________________________________________________
+
+
+const styles = StyleSheet.create ({
+    BotonBack: {
+        flexDirection: 'row',
+        position:'absolute',
+        top:Platform.OS === 'ios' ? 60: 40,
+        marginLeft:16,
+    },
+    IconBack: {
+        color:'#FFFFFF',
+        fontSize:25,
+    },
+    texto: {
+        color:'#8CAE81',
+        top:1.5,
+        fontSize: 15, 
+        fontFamily:'OpenSansBold'
+      },
+
+})
+
+
+export default BotonBack;
