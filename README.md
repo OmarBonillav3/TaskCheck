@@ -4,14 +4,14 @@ Este es un proyecto personal el cual se llama TaskCheck. Esta es una aplicacion 
 Esta aplicacion tendra:
 
 - Inicio
-- Pantalla de Registro
-- Pantalla de Login
-- Pantalla de Home (Donde veremos todas las notas y la barra de navegacion)
+- Pantalla de Login 
+- Pantalla de Registro (Podremos registarnos guardando con AsynStorage, y en un futuro con google)
+- Pantalla de Home (Donde veremos todas las notas y las lista)
 - Pantalla de Nota (El lugar donde escribiremos las notas)
-- Pantalla de Calendario (Aun no esta implementada)
+- Pantalla de Listas (Podremos hacer listas de caceres, Cosas por hacer.. ETC)
 
 Nota:
-Cuando inicies la aplicacion para poder ejecutarla desde tu dispositivo debes presionar la " S " para cambiar de tipo de ejecucion y se pueda ejecutar en ExpoGo desde tu celular fisico. Puedes descargar ExpoGo en https://expo.dev/go
+Cuando inicies la aplicacion para poder ejecutarla desde tu dispositivo debes presionar la " i " o " a " dependiendo en que dispotivo lo quieras emular. Tambien puedes usar ExpoGo desde tu celular fisico, solo desbes scanear el QR con la app y ya estaras dentro de la app. Puedes descargar ExpoGo en https://expo.dev/go
 
 ## Instalacion y Ejecucion de proyecto
 
