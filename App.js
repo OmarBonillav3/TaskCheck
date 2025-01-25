@@ -1,11 +1,12 @@
 import { StyleSheet, Platform, TouchableOpacity, Keyboard } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { enableScreens } from 'react-native-screens'; //Importando para mejorar la navegacion ya que me esta dando problemas y la app se cierra
 
 // Importando iconos y marcando los iconos usables
 import Icon from 'react-native-vector-icons/AntDesign'; // Para icono de Home -  home
@@ -31,6 +32,8 @@ import CustomTabBar from './components/CustomTabBar';
 // Declarando constantes para las funciones de navegacion de pantallas
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+enableScreens(); //Mejorando la navegacion
 
 
 function HomeTabs () {
