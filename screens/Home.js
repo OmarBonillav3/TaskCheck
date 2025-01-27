@@ -117,8 +117,7 @@ const styles = StyleSheet.create({
         backgroundColor:'#E3E6E9',
     },
     //     ESTILO DEL BUSCADOR
-    ContainerSearch: {
-        // top:10,    
+    ContainerSearch: {    
         backgroundColor:"#F8F8F8",
         borderRadius:10,
         width:'auto',
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
         borderWidth: 1.1,
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom:35,
+        marginBottom:25,
     },
     IconSearch:{
         fontSize:21,
@@ -137,10 +136,11 @@ const styles = StyleSheet.create({
     TextInputSearch:{
         fontSize:Platform.OS === 'ios' ? 14 : 13,
         marginLeft:10,
-        width: 1000, // Esto es para asegurarme que en cada dispositivo este tome el ancho completo, Ya que arriba esta en auto y asi se ajusta
+        width: 200000, // Esto es para asegurarme que en cada dispositivo este tome el ancho completo, Ya que arriba esta en auto y asi se ajusta
         height:Platform.OS === 'ios' ? 40 : 38,
         fontFamily:'OpenSansMedium',  
     },
+    //      ESTILO DE LA PRESENTACION
     ContainerPresentacion: {
         alignItems:'center',
         justifyContent:'center',
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
         fontFamily:'OpenSansMedium',
         fontSize:13,
     },
-// ESPACIO DE ESTILO PARA LAS LISTAS
+//          ESPACIO DE ESTILO PARA LAS LISTAS
     ContainerList: {
         padding: 16,
         width: 'auto',

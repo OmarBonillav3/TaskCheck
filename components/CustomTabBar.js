@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Platform, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { TouchableOpacity, StyleSheet, Platform, Keyboard, Animated } from 'react-native';
 
 // Importando Iconos para las pantallas
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -13,6 +13,31 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
     return null;
   }
 
+  // Estado y animación para manejar la posición del tab bar
+  const [translateY] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      Animated.timing(translateY, {
+        toValue: 100, // Oculta la barra (ajusta el valor según sea necesario)
+        duration: 150,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      Animated.timing(translateY, {
+        toValue: 0, // Restaura la posición original
+        duration: 0,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, [translateY]);
 
   const tabs = [
     { name: 'List', icon: <Icon2 name="tasklist" size={24} color="#8CAE81" style={styles.Iconos} /> },
@@ -21,7 +46,14 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
   ];
 
   return (
-    <View style={styles.tabBar}>
+    <Animated.View
+      style={[
+        styles.tabBar,
+        {
+          transform: [{ translateY }],
+        },
+      ]}
+    >
       {tabs.map((tab, index) => {
         const isFocused = state.routes[state.index].name === tab.name;
 
@@ -37,7 +69,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
           }
         };
 
-         const onLongPress = () => {
+        const onLongPress = () => {
           navigation.emit({
             type: 'tabLongPress',
             target: state.routes[index].key,
@@ -52,10 +84,10 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
             style={[styles.tab, isFocused && styles.tabFocused]}
           >
             {React.cloneElement(tab.icon, { color: isFocused ? '#8CAE81' : '#E9EFEC' })}
-            </TouchableOpacity>
+          </TouchableOpacity>
         );
       })}
-    </View>
+    </Animated.View>
   );
 };
 
@@ -65,9 +97,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: '#1E1E1E',
     paddingVertical: Platform.OS === 'ios' ? 30 : 15,
-  },
-  Iconos: {
-    bottom: Platform.OS === 'ios' ? 10 : 2,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    bottom: 15,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    zIndex: 10, // Asegura que esté por encima del contenido
   },
   tab: {
     alignItems: 'center',
