@@ -21,6 +21,9 @@ import { useRoute } from '@react-navigation/native';
 //  Agregar una funciona en la cual podemos entrar a esta lista y poder editarla, asi tambien si queremos borrar algo podemos agregar un lapiz
 //  para poder entrar a esta funcion, buscar la manera de poder editar esto de la forma mas facil posible y que no consuma tanto
 // ------------------------------------------------------------------------------------------------------------------------------------------
+// Agregar una funciona que haga que el entrer agregue otro checknox con su input y el teclado cambie al nuevo input.
+// Borrar el mas y con eso posicionar mejor los iconos por ejemplo en el TopBar, IDEA: Volverlos componenter y solo importarlos al App.js                                                     
+// ------------------------------------------------------------------------------------------------------------------------------------------ 
 
 
 export default function List({ navigation }) {
@@ -176,12 +179,15 @@ export default function List({ navigation }) {
                 value={checkbox.text}
                 onChangeText={(text) => updateCheckboxText(checkbox.id, text)}
                 placeholder="Escribe..."
+                // returnKeyType="Enter"
+                onSubmitEditing={addCheckbox}
+                blurOnSubmit={false}
               />
 
               {/* Botón para eliminar el checkbox */}
               <TouchableOpacity onPress={() => deleteCheckbox(checkbox.id)}>
                 <View style={styles.deleteButton}>
-                  <Icon style={styles.deleteIcon} name='trash'/>
+                  <Icon style={styles.deleteIcon} name='x'/>
                   {/* <View style={styles.deleteIcon} /> */}
                 </View>
               </TouchableOpacity>

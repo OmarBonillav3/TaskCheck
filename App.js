@@ -86,7 +86,7 @@ function HomeTabs () {
                 <BotonBack 
                   style={styles.BotonBackAjustes}
                   iconStyle={styles.IconBackStyle}
-                  texto='Listas'
+                  
                 />,
             }}
           />
