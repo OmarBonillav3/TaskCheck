@@ -10,8 +10,8 @@ Esta aplicacion tendra:
 - Pantalla de Nota (El lugar donde escribiremos las notas)
 - Pantalla de Listas (Podremos hacer listas de caceres, Cosas por hacer.. ETC)
 
-Nota:
-Cuando inicies la aplicacion para poder ejecutarla desde tu dispositivo debes presionar la " i " o " a " dependiendo en que dispotivo lo quieras emular. Tambien puedes usar ExpoGo desde tu celular fisico, solo desbes scanear el QR con la app y ya estaras dentro de la app. Puedes descargar ExpoGo en https://expo.dev/go
+> [!NOTE]
+> Cuando inicies la aplicacion para poder ejecutarla desde tu dispositivo debes presionar la " i " o " a " dependiendo en que dispotivo lo quieras emular. Tambien > > puedes usar ExpoGo desde tu celular fisico, solo desbes scanear el QR con la app y ya estaras dentro de la app. Puedes descargar ExpoGo en https://expo.dev/go
 
 ## Instalacion y Ejecucion de proyecto
 

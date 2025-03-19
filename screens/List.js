@@ -9,122 +9,139 @@ import Icon2 from 'react-native-vector-icons/Entypo'; // Icono check
 import Icon3 from 'react-native-vector-icons/MaterialIcons'; // Icono playlist-add
 import Icon4 from 'react-native-vector-icons/FontAwesome6'; // Icono list
 
+// Importando componentes
+import { saveData, loadData } from '../components/DataList'; //Componente para administrar los datos guardados
+
 // Importando para la edicion de listas
 import { useRoute } from '@react-navigation/native';
 
 // ------------------------------------------------------------------------------------------------------------------------------------------
 //                                                     IDEAS DE NUEVAS FUNCIONES                                                              
 // ------------------------------------------------------------------------------------------------------------------------------------------
-//  Hacer que se pueda guardar y que se pueda presentar en la pantalla Home.
-//  Que la visual de esta en la pantalla Home solo sea el titulo los checkbox con su texto respectivo y que desde ahi se le pueda dar check.
-//  
-//  Agregar una funciona en la cual podemos entrar a esta lista y poder editarla, asi tambien si queremos borrar algo podemos agregar un lapiz
-//  para poder entrar a esta funcion, buscar la manera de poder editar esto de la forma mas facil posible y que no consuma tanto
+
 // ------------------------------------------------------------------------------------------------------------------------------------------
-// Agregar una funciona que haga que el entrer agregue otro checknox con su input y el teclado cambie al nuevo input.
+// Agregar una funciona que haga que el enter agregue otro checkbox con su input y el teclado cambie al nuevo input.
 // Borrar el mas y con eso posicionar mejor los iconos por ejemplo en el TopBar, IDEA: Volverlos componenter y solo importarlos al App.js                                                     
+// ------------------------------------------------------------------------------------------------------------------------------------------ 
+// Poner que el boton de borrar toda la lista solo salga a la hora de editar las listas y no en la creacion de una nueva
+// Y que tambien no borre todas las listas creadas ya que borra todas las listas creadas
+// ------------------------------------------------------------------------------------------------------------------------------------------ 
+// Buscar una forma linda de poner el boton de guardar las listas y ya avanzar con otras cosas
 // ------------------------------------------------------------------------------------------------------------------------------------------ 
 
 
-export default function List({ navigation }) {
-  const [checkboxes, setCheckboxes] = useState(listData?.checkboxes || []);
-  const [titulo, setTitulo] = useState(listData?.titulo || '');
+export default function List ({ navigation }) {
+  const [titulo, setTitulo] = useState('');
+  const [checkboxes, setCheckboxes] = useState([]);
+  const [listId, setListId] = useState(null);
 
   const route = useRoute();
-  const { listData } = route.params || {}; // Recibir datos desde Home.js
 
-   // useEffect para inicializar el estado cuando listData esté disponible
-   useEffect(() => {
-    if (listData) {
-      setCheckboxes(listData.checkboxes || []);
-      setTitulo(listData.titulo || '');
-    }
-  }, [listData]);
+  // Recibe los datos y los actualiza
+  useEffect(() => {
+    const fetchData = async () => {
+      if (route.params?.listData) {
+        setTitulo(route.params.listData.titulo);
+        setCheckboxes(route.params.listData.checkboxes || []);
+        setListId(route.params.listData.id);
+      } else {
+        const savedData = await loadData();
+        if (savedData) {
+          setTitulo(savedData.titulo);
+          setCheckboxes(savedData.checkboxes);
+        }
+      }
+    };
+    fetchData();
+  }, [route.params]);
 
-  // Función para agregar un nuevo checkbox
-  const addCheckbox = () => {
-    setCheckboxes([...checkboxes, { id: Date.now(), text: '', checked: false }]);
-  };
-
-  // Función para actualizar el texto de un checkbox
-  const updateCheckboxText = (id, newText) => {
-    setCheckboxes((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, text: newText } : item))
-    );
-  };
-
-  // Función para eliminar un checkbox
-  const deleteCheckbox = (id) => {
-    setCheckboxes((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  // Función para alternar el estado de marcado de un checkbox
-  const toggleCheckbox = (id, newValue) => {
-    setCheckboxes((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, checked: newValue } : item))
-    );
-  };
-
-  // Dismiss keyboard
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
-
-  // Funcion para guardar y editar datos de las listas
-  const saveList = async () => {
+  // Funcion para guardar los datos segun que estado
+  const handleSaveList = async () => {
     try {
       const existingLists = await AsyncStorage.getItem('list');
-      let parsedLists = existingLists ? JSON.parse(existingLists) : [];
-      
-      if (!Array.isArray(parsedLists)) {
-        parsedLists = [];
+      let lists = existingLists ? JSON.parse(existingLists) : [];
+  
+      if (!Array.isArray(lists)) {
+        lists = [];
       }
   
-      if (listData?.id) {
-        // Actualizar lista existente
-        const updatedLists = parsedLists.map((list) => 
-          list.id === listData.id ? { ...list, titulo, checkboxes } : list
-        );
-        await AsyncStorage.setItem('list', JSON.stringify(updatedLists));
+      let updatedListId = listId;
+      if (!listId) {
+        // Si es una nueva lista, generamos un ID único
+        updatedListId = Date.now().toString();
+        setListId(updatedListId);
+      }
+  
+      // Buscar si la lista ya existe
+      const listIndex = lists.findIndex((item) => item.id === updatedListId);
+  
+      if (listIndex !== -1) {
+        // Si ya existe, actualizarla
+        lists[listIndex] = { id: updatedListId, titulo, checkboxes };
       } else {
-        // Crear nueva lista
-        const newList = { id: Date.now(), titulo, checkboxes };
-        const updatedLists = [...parsedLists, newList];
-        await AsyncStorage.setItem('list', JSON.stringify(updatedLists));
+        // Si no existe, agregarla
+        lists.push({ id: updatedListId, titulo, checkboxes });
       }
   
+      await AsyncStorage.setItem('list', JSON.stringify(lists));
+  
+      // Navegar de regreso a Home
       navigation.reset({
         index: 0,
         routes: [{ name: 'Home' }],
       });
-    } catch (e) {
-      console.error('Error al guardar la lista:', e);
+    } catch (error) {
+      console.error('Error al guardar la lista', error);
     }
   };
+  
+
+  // Para agregar nuevos Checkboxes
+  const addCheckbox = () => {
+    setCheckboxes((prevCheckboxes) => [...(prevCheckboxes || []), { id: Date.now().toString(), text: '', checked: false }]);
+  };
+  const toggleCheckbox = (id, value) => {
+    setCheckboxes(checkboxes.map(item => (item.id === id ? { ...item, checked: value } : item)));
+  };
+
+  // Para Actualizar
+  const updateCheckboxText = (id, text) => {
+    setCheckboxes(checkboxes.map(item => (item.id === id ? { ...item, text } : item)));
+  };
+
+  // Para borrar
+  const deleteCheckbox = (id) => {
+    setCheckboxes(checkboxes.filter(item => item.id !== id));
+  };
+
 
   // Funcion para borrar toda la lista
-  const confirmDeleteAll = () => {
+  const confirmDeleteCurrentList = () => {
     Alert.alert(
-      "Confirmar",
-      "¿Estás seguro de que quieres borrar toda la lista?",
+      'Confirmar eliminación',
+      '¿Estás seguro de que quieres borrar esta lista?',
       [
         {
-          text: "Cancelar",
-          style: "cancel"
+          text: 'Cancelar',
+          style: 'cancel',
         },
         {
-          text: "Borrar",
+          text: 'Borrar',
           onPress: async () => {
             try {
               const existingLists = await AsyncStorage.getItem('list');
-              let parsedLists = existingLists ? JSON.parse(existingLists) : [];
-              
-              if (!Array.isArray(parsedLists)) {
-                parsedLists = [];
-              }
-              
-              const updatedLists = parsedLists.filter((list) => list.id !== listData.id);
-              await AsyncStorage.setItem('list', JSON.stringify(updatedLists));
+              let lists = existingLists ? JSON.parse(existingLists) : [];
+  
+              // Eliminar solo la lista actual
+              lists = lists.filter((item) => item.id !== listId);
+  
+              await AsyncStorage.setItem('list', JSON.stringify(lists));
+  
+              setCheckboxes([]);
+              setTitulo('');
+              setListId(null);
+  
+              // Navegar de regreso a Home
               navigation.reset({
                 index: 0,
                 routes: [{ name: 'Home' }],
@@ -133,11 +150,17 @@ export default function List({ navigation }) {
               console.error('Error al borrar la lista:', e);
             }
           },
-          style: "destructive"
-        }
+          style: 'destructive',
+        },
       ],
       { cancelable: true }
     );
+  };
+  
+
+  // Dismiss keyboard - Ocultar el teclado
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
   };
 
   return (
@@ -149,10 +172,10 @@ export default function List({ navigation }) {
             <Icon4 name='plus' style={styles.IconoAgregar}/>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={saveList} style={styles.BotonSave}>
+          <TouchableOpacity onPress={handleSaveList} style={styles.BotonSave}>
             <Icon name='save' style={styles.IconoSave}/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.BotonTrash} onPress={confirmDeleteAll}>
+          <TouchableOpacity style={styles.BotonTrash} onPress={confirmDeleteCurrentList}>
             <Icon style={styles.IconoTrash} name='trash'/>
           </TouchableOpacity>
         </View>
@@ -162,8 +185,8 @@ export default function List({ navigation }) {
           onChangeText={setTitulo}
           placeholder="Titulo de lista"
         />
-        <ScrollView>
-          {checkboxes.map((checkbox) => (
+        <ScrollView style={{ marginBottom: 0 }}>
+        {Array.isArray(checkboxes) && checkboxes.map((checkbox) => (
             <View key={checkbox.id} style={styles.checkboxContainer}>
               {/* CheckBox componente de Expo */}
               <Checkbox
@@ -194,6 +217,11 @@ export default function List({ navigation }) {
             </View>
           ))}
         </ScrollView>
+        <View>
+          <TouchableOpacity onPress={handleSaveList} style={styles.BotonSave}>
+            <Icon name='save' style={styles.IconoSave}/>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </TouchableWithoutFeedback>
   );
@@ -237,6 +265,7 @@ const styles = StyleSheet.create({
     color:'#8CAE81',
     fontSize:23,
   },
+
   // Contenedor y boton de trash
   BotonTrash: {
     justifyContent:'center',
