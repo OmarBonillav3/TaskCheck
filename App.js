@@ -1,5 +1,5 @@
 import { StyleSheet, Platform, TouchableOpacity, Keyboard } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
@@ -7,6 +7,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { enableScreens } from 'react-native-screens'; //Importando para mejorar la navegacion ya que me esta dando problemas y la app se cierra
+import { useRoute } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Importando iconos y marcando los iconos usables
 import Icon from 'react-native-vector-icons/AntDesign'; // Para icono de Home -  home
@@ -28,6 +30,8 @@ import ListScreen from './screens/List';
 import LogoGeneral from './components/LogoGeneral';
 import BotonBack from './components/BotonBack';
 import CustomTabBar from './components/CustomTabBar';
+import TabBarList from './components/TabBarList';
+import { saveData, loadData, STORAGE_KEY } from './components/DataList'; //Componente para administrar los datos guardados
 
 // Declarando constantes para las funciones de navegacion de pantallas
 const Stack = createStackNavigator();
@@ -35,16 +39,83 @@ const Tab = createBottomTabNavigator();
 
 enableScreens(); //Mejorando la navegacion
 
+function HomeTabs ({ navigation }) {
 
-function HomeTabs () {
 
+   const [titulo, setTitulo] = useState('');
+    const [checkboxes, setCheckboxes] = useState([]);
+    const [listId, setListId] = useState(null);
+  
+    const route = useRoute();
+  
+    // Recibe los datos y los actualiza
+    useEffect(() => {
+      const fetchData = async () => {
+        const savedData = await saveData();
+        if (savedData) {
+          console.log('Loaded saved data:', savedData);
+          setTitulo(savedData.titulo);
+          setCheckboxes(savedData.checkboxes);
+        }
+      };
+      fetchData();
+    }, [route.params]);
+
+// BUSCAR FORMA DE IMPLEMENTAR DE MEJOR FORMA ESTAS FUNCIONES DE GUARDADO
+
+    const handleSaveList = async () => {
+      try {
+        console.log('Saving data - Titulo:', titulo, 'Checkboxes:', checkboxes);
+    
+        // Verifica si el listId ya existe
+        const existingLists = await AsyncStorage.getItem(STORAGE_KEY);
+        let lists = existingLists ? JSON.parse(existingLists) : [];
+    
+        console.log('Existing lists:', lists);
+    
+        let updatedListId = listId;
+        if (!updatedListId) {
+          updatedListId = Date.now().toString();
+          setListId(updatedListId);
+        }
+    
+        const listIndex = lists.findIndex((item) => item.id === updatedListId);
+    
+        if (listIndex !== -1) {
+          // Si la lista existe, actualízala
+          lists[listIndex] = { id: updatedListId, titulo, checkboxes };
+        } else {
+          // Si no existe, agrégala
+          lists.push({ id: updatedListId, titulo, checkboxes });
+        }
+    
+        console.log('Updated lists:', lists);
+    
+        // Guarda la lista actualizada
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(lists));
+    
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'HomeTabs' }],
+        });
+      } catch (error) {
+        console.error('Error al guardar la lista', error);
+      }
+    };
+ 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
 
   return (
     <Tab.Navigator
-    tabBar={(props) => <CustomTabBar {...props} />}
+    tabBar={(props) => {
+      // Verifica la pantalla actual para cambiar la tabBar
+      if (props.state.routes[props.state.index].name === 'List') {
+        return <TabBarList {...props} />;
+      }
+      return <CustomTabBar {...props} />;
+    }}
     screenOptions={() => ({
       headerLeft: () => <LogoGeneral style={styles.Logo} />,
       tabBarHideOnKeyboard: Platform.OS!== 'ios'
@@ -86,8 +157,11 @@ function HomeTabs () {
                 <BotonBack 
                   style={styles.BotonBackAjustes}
                   iconStyle={styles.IconBackStyle}
-                  
                 />,
+                headerRight : () =>
+                  <TouchableOpacity onPress={handleSaveList} style={styles.BotonSave}>
+                    <Icon name='save' style={styles.IconoSave}/>
+                  </TouchableOpacity>
             }}
           />
         <Tab.Screen 
@@ -202,6 +276,15 @@ TxtStyle: {
     marginRight:20,  
     fontSize:27,
     color:'#8CAE81',
+},
+  BotonSave: {
+    justifyContent:'center',
+    alignItems:'center',
+    marginLeft:16,
+},
+  IconoSave: {
+    color:'#8CAE81',
+    fontSize:23,
 },
 });
 

@@ -17,13 +17,13 @@ import CrearListas from '../components/CrearListas';
 
 export default function Home ({ navigation }) {
     const [Search, setSearch] = useState();
-    const [list, setList] = useState(null);
+    const [list, setList] = useState([]);
 
     // Función para cargar la lista desde AsyncStorage
     const fetchList = async () => {
         try {
           const savedList = await AsyncStorage.getItem('list');
-          console.log('Datos cargados:', savedList); // Debug
+        //   console.log('Datos cargados:', savedList); // Debug
           if (savedList) {
             setList(JSON.parse(savedList));
           }
@@ -40,29 +40,31 @@ export default function Home ({ navigation }) {
     );
       
     
-    const toggleCheckbox = (checkboxId, newValue, listId) => {
-        if (list) {
-          const updatedList = list.map((item) => {
+    const toggleCheckbox = async (checkboxId, newValue, listId) => {
+        const updatedList = list.map((item) => {
             if (item.id === listId) {
-              const updatedCheckboxes = item.checkboxes.map((checkbox) =>
-                checkbox.id === checkboxId ? { ...checkbox, checked: newValue } : checkbox
-              );
-              return { ...item, checkboxes: updatedCheckboxes };
+                const updatedCheckboxes = item.checkboxes.map((checkbox) =>
+                    checkbox.id === checkboxId ? { ...checkbox, checked: newValue } : checkbox
+                );
+                return { ...item, checkboxes: updatedCheckboxes };
             }
             return item;
-          });
-      
-          setList(updatedList);
-          AsyncStorage.setItem('list', JSON.stringify(updatedList));
-        }
-      };
+        });
+    
+        setList(updatedList);
+        await AsyncStorage.setItem('list', JSON.stringify(updatedList));
+    };
+
+    //Descomentar solo para borrar los datos guardados que esten dañados
+    //AsyncStorage.clear(); 
+
 
 //    ENCONTRAR LA MANERA DE QUE EL TAB BAR NO SUBA CUANDO SE ABRE EL TECLADO
 
       return (
         <View style={styles.Container }>  
             <StatusBar style='light' />
-            <ScrollView>
+            <ScrollView style={{ marginBottom:55, }}>
                 {/* BUSCADOR DE PALABRAS DE EN LAS NOTAS */}
                 <View style={styles.ContainerSearch}>
                     <Icon name='search1' style={styles.IconSearch}/>
@@ -76,12 +78,11 @@ export default function Home ({ navigation }) {
                 {/* View de Listas */}
                 {list && list.length > 0 ? (
                 list.map((item) => (
-                <View key={item.id} style={styles.ContainerList}>
-                    <TouchableOpacity onPress={() => navigation.navigate('List', { listData: item })} style={styles.ContainerPencil}>
-                        <Icon2 name='pencil' style={styles.IconPencil} />
-                    </TouchableOpacity>
+                <TouchableOpacity key={item.id} onPress={() => navigation.navigate('List', { listData: item })}>
+                <View style={styles.ContainerList}>
                     <Text style={styles.TitleList}>{item.titulo}</Text>
-                    {item.checkboxes.map((checkbox) => (
+                    {Array.isArray(item.checkboxes) &&
+                        item.checkboxes.map((checkbox) => (
                         <View key={checkbox.id} style={styles.checkboxContainer}>
                             <Checkbox
                                 value={checkbox.checked}
@@ -93,6 +94,7 @@ export default function Home ({ navigation }) {
                         </View>
                     ))}
                 </View>
+                </TouchableOpacity>
                     ))
                 ) : (
         <View style={styles.ContainerPresentacion}>
@@ -196,4 +198,4 @@ const styles = StyleSheet.create({
         fontSize:13,
 
     },
-});                     
+});             

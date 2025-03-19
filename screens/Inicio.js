@@ -4,6 +4,10 @@ import { StatusBar } from "expo-status-bar";
 
 import Logo from '../components/Logo';
 
+/* <TouchableOpacity style={styles.Boton} onPress={() => navigation.navigate('Login')}>
+    <Text style={styles.BotonTxt}> Comenzar </Text>
+</TouchableOpacity> */
+
 export default function Inicio ({ navigation }) {
     return (
         <View style={styles.container}>
@@ -16,7 +20,8 @@ export default function Inicio ({ navigation }) {
                 <Text style={styles.Txt2}> unete a TaskCheck y agrega un check a tus metas </Text>
             </View>
 
-            <TouchableOpacity style={styles.Boton} onPress={() => navigation.navigate('Login')}>
+
+            <TouchableOpacity style={styles.Boton} onPress={() => navigation.navigate('HomeTabs')}>
                 <Text style={styles.BotonTxt}> Comenzar </Text>
             </TouchableOpacity>
 
