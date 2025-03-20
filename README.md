@@ -1,11 +1,14 @@
 # TASKCHECK
-Este es un proyecto personal el cual se llama TaskCheck. Esta es una aplicacion de notas que no busca ser tan simple.
+Este es un proyecto personal el cual se llama TaskCheck. Esta es una aplicacion de notas que busca demostrar como he usado la base da dstos
+MongoDB Atlas para el registro e inicio del userario y el AsyncStorage y un conjuntos de diversas funciones que buscan un buen flujo y uso de la app.
+
+
 
 Esta aplicacion tendra:
 
 - Inicio
 - Pantalla de Login 
-- Pantalla de Registro (Podremos registarnos guardando con AsynStorage, y en un futuro con google)
+- Pantalla de Registro 
 - Pantalla de Home (Donde veremos todas las notas y las lista)
 - Pantalla de Nota (El lugar donde escribiremos las notas)
 - Pantalla de Listas (Podremos hacer listas de caceres, Cosas por hacer.. ETC)

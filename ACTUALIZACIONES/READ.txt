@@ -1,0 +1,10 @@
+================================================================================
+La ultima subida de datos a Github fue el 19 de marzo del 2025
+Y esta fue para agregar la base de datos con MongoDB Atlas.
+--------------------------------------------------------------------------------
+Nota: Debo ahora implementar esta base de datos en el registro
+e inicio de sesion de los use.
+================================================================================
+================================================================================
+
+Proxima actualizacion: ..... 
